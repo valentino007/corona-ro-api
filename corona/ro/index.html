@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async
+	src="https://www.googletagmanager.com/gtag/js?id=UA-163810015-1"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-163810015-1');
+</script>
+
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+<meta name="description"
+	content="playing with sql/data, charts, js and css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="pank">
+<meta name="keywords" content="covid-19, corona, Charts.js, pank, sql, Romania">
+
+<title>Corona - COVID-19 - for Romania</title>
+
+<link rel="stylesheet" href="../css/Chart.min.css">
+<link rel="stylesheet" href="../css/jquery-ui.min.css">
+<link rel="stylesheet" href="../css/jquery-ui.structure.min.css">
+<link rel="stylesheet" href="../css/jquery-ui.theme.min.css">
+<!-- my css -->
+<link rel="stylesheet" href="../css/pank-corona.css">
+
+<!-- javascript -->
+<script type="text/javascript" src="../js/Chart.js"></script>
+<script type="text/javascript" src="../js/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+
+<!-- here goes the script -->
+<script type="text/javascript" src="../js/pank-corona-ro.js"></script>
+
+</head>
+
+<body>
+
+	<div id="header"></div>
+
+	<div id="romania_info" class="info-table">
+		<div class="info-table-heading">
+			<div class="info-table-cell">
+				<p>Data</p>
+			</div>
+			<div class="info-table-cell">
+				<p>Cazuri confirmate</p>
+			</div>
+			<div class="info-table-cell" id="ro_avg_confirmed_th">
+				<p title="Media cazurilor in ultimele 14 zile">Media la 14 zile</p>
+			</div>
+		</div>
+		<div class="info-table-row">
+			<div class="info-table-cell" id="ro_date" style="color: black;"></div>
+			<div class="info-table-cell" id="ro_confirmed" style="color: red;"></div>
+			<div class="info-table-cell" id="ro_avg_confirmed" style="color: blue;"></div>
+		</div>
+		<div class="info-table-row">
+			<div class="info-table-evolution-cell" style="color: black;">&nbsp;</div>
+			<div class="info-table-evolution-cell" id="ro_confirmed_new" style="color: red;"></div>
+			<div class="info-table-evolution-cell" id="ro_avg_diff" style="color: blue;">&nbsp;</div>
+		</div>
+	</div>
+
+	<div class="graph-container" id="graph-container-romania">
+		<canvas id="canvasCoronaRomania"></canvas>
+		<br />
+		<div id="romania-slider-range"></div>
+	</div>
+
+	<hr />
+
+	<div class="tab-widget-selection">
+		<div class="widget-table-cell" id="judet-selectmenu">
+			<select name="judet" id="judet" class="selectmenu"></select>
+		</div>
+	</div>
+
+	<div class="graph-container" id="graph-container-judet">
+		<div id="judet_info" class="info-table">
+			<div class="info-table-heading">
+				<div class="info-table-cell">
+					<p>Judet</p>
+				</div>
+				<div class="info-table-cell">
+					<p>Cazuri confirmate</p>
+				</div>
+				<div class="info-table-cell">
+					<p title="Media cazurilor in ultimele 14 zile">Media la 14 zile</p>
+				</div>
+				<div class="info-table-cell">
+					<p>Incidenta</p>
+				</div>
+			</div>
+			<div class="info-table-row">
+				<div class="info-table-cell" id="judet_nume" style="color: black;"></div>
+				<div class="info-table-cell" id="judet_confirmed" style="color: red;"></div>
+				<div class="info-table-cell" id="judet_avg_confirmed" style="color: blue;"></div>
+				<div class="info-table-cell" id="judet_incidence" style="color: orange;"></div>
+			</div>
+			<div class="info-table-row">
+				<div class="info-table-evolution-cell" style="color: black;">&nbsp;</div>
+				<div class="info-table-evolution-cell" id="judet_confirmed_new" style="color: red;"></div>
+				<div class="info-table-evolution-cell" id="judet_avg_diff" style="color: blue;"></div>
+				<div class="info-table-evolution-cell" id="judet_incidence_diff" style="color: orange;"></div>
+			</div>
+		</div>
+		<br />
+		<canvas id="canvasCoronaJudet"></canvas>
+		<br />
+		<div id="judet-slider-range"></div>
+	</div>
+
+	<div id="footer" class="footer"></div>
+
+</body>
+
+</html>

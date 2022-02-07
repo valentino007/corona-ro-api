@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async
+	src="https://www.googletagmanager.com/gtag/js?id=UA-163810015-1"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-163810015-1');
+</script>
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+
+<meta name="description"
+	content="playing with sql/data, charts, js and css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="pank">
+<meta name="keywords" content="covid-19, corona, Charts.js, pank, sql">
+
+<title>Corona - COVID-19</title>
+
+<link rel="stylesheet" href="css/Chart.min.css">
+<link rel="stylesheet" href="css/jquery-ui.min.css">
+<link rel="stylesheet" href="css/jquery-ui.structure.min.css">
+<link rel="stylesheet" href="css/jquery-ui.theme.min.css">
+<!-- my css -->
+<link rel="stylesheet" href="css/pank-corona.css">
+
+<!-- javascript -->
+<script type="text/javascript" src="js/Chart.js"></script>
+<script type="text/javascript" src="js/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+
+<!-- here goes the script -->
+<script type="text/javascript" src="js/pank-corona.js"></script>
+
+</head>
+
+<body>
+
+	<div id="header"></div>
+
+	<div id="global_info" class="info-table">
+		<div class="info-table-heading">
+			<div class="info-table-cell">
+				<p>Date</p>
+			</div>
+			<div class="info-table-cell">
+				<p>Confirmed</p>
+			</div>
+			<div class="info-table-cell">
+				<p>Deaths</p>
+			</div>
+			<div class="info-table-cell">
+				<p>Recovered</p>
+			</div>
+			<div class="info-table-cell">
+				<p>Still sick</p>
+			</div>
+		</div>
+		<div class="info-table-row">
+			<div class="info-table-cell" id="global_date" style="color: black;"></div>
+			<div class="info-table-cell" id="global_confirmed"
+				style="color: red;"></div>
+			<div class="info-table-cell" id="global_deaths"></div>
+			<div class="info-table-cell" id="global_recovered"
+				style="color: green;"></div>
+			<div class="info-table-cell" id="global_still_sick"
+				style="color: orange;"></div>
+		</div>
+		<div class="info-table-row">
+			<div class="info-table-evolution-cell" style="color: black;">&nbsp;</div>
+			<div class="info-table-evolution-cell" id="global_confirmed_new"
+				style="color: red;"></div>
+			<div class="info-table-evolution-cell" id="global_deaths_new"></div>
+			<div class="info-table-evolution-cell" id="global_recovered_new"
+				style="color: green;"></div>
+			<div class="info-table-evolution-cell" id="global_still_sick_new"
+				style="color: orange;"></div>
+		</div>
+	</div>
+
+	<div class="graph-container" id="graph-container-global">
+		<div class="tab-widget-selection">
+			<div class="widget-table-cell" id="global-evolution">
+				<input type="radio" value="global-evolution" name="radio-global"
+					id="radio-global-evolution" checked="checked"> <label
+					for="radio-global-evolution">Evolution</label> <input type="radio"
+					value="global-daily-growth" name="radio-global"
+					id="radio-global-daily-growth"> <label
+					for="radio-global-daily-growth">Daily growth</label> <input
+					type="radio" value="global-compare" name="radio-global"
+					id="radio-global-compare"> <label
+					for="radio-global-compare">Compare</label>
+			</div>
+			<div class="widget-table-cell" id="global-selectmenu-category">
+				<select name="globalCategory" id="globalCategory" class="selectmenu">
+					<option value="confirmed">Confirmed</option>
+					<option value="deaths">Deaths</option>
+					<!-- 
+					<option value="recovered">Recovered</option>
+					<option value="still_sick">Still sick</option>
+					<option value="stacked">Stacked</option>
+					 -->
+				</select>
+			</div>
+			<div class="widget-table-cell" id="global-selectmenu-limit">
+				<select name="limit" id="limit" class="selectmenu">
+					<option value="10" selected="selected">10</option>
+					<option value="15">15</option>
+					<option value="20">20</option>
+					<option value="25">25</option>
+				</select>
+			</div>
+		</div>
+
+		<br />
+		<canvas id="canvasCoronaGlobal"></canvas>
+		<br />
+		<div id="global-slider-range"></div>
+	</div>
+
+	<hr />
+
+	<div class="tab-widget-selection">
+		<div class="widget-table-cell" id="country-selectmenu">
+			<select name="country" id="country" class="selectmenu"></select>
+		</div>
+		<div class="widget-table-cell" id="country-selectmenu-radio">
+			<input type="radio" value="country-evolution" name="radio-country"
+				id="radio-country-evolution" checked="checked"> <label
+				for="radio-country-evolution">Evolution</label> <input type="radio"
+				value="country-daily-growth" name="radio-country"
+				id="radio-country-daily-growth"> <label
+				for="radio-country-daily-growth">Daily growth</label>
+		</div>
+		<div class="widget-table-cell" id="country-selectmenu-category">
+			<select name="countryCategory" id="countryCategory"
+				class="selectmenu">
+				<option value="confirmed">Confirmed</option>
+				<option value="deaths">Deaths</option>
+				<option value="recovered">Recovered</option>
+				<option value="still_sick">Still sick</option>
+				<option value="stacked">Stacked</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="graph-container" id="graph-container-country">
+		<div id="country_info" class="info-table">
+			<div class="info-table-heading">
+				<div class="info-table-cell">
+					<p>Country</p>
+				</div>
+				<div class="info-table-cell">
+					<p>Confirmed</p>
+				</div>
+				<div class="info-table-cell">
+					<p>Deaths</p>
+				</div>
+				<div class="info-table-cell">
+					<p>Recovered</p>
+				</div>
+				<div class="info-table-cell">
+					<p>Still sick</p>
+				</div>
+			</div>
+			<div class="info-table-row">
+				<div class="info-table-cell" id="country_name" style="color: black;"></div>
+				<div class="info-table-cell" id="country_confirmed"
+					style="color: red;"></div>
+				<div class="info-table-cell" id="country_deaths"></div>
+				<div class="info-table-cell" id="country_recovered"
+					style="color: green;"></div>
+				<div class="info-table-cell" id="country_still_sick"
+					style="color: orange;"></div>
+			</div>
+			<div class="info-table-row">
+				<div class="info-table-evolution-cell" style="color: black;">&nbsp;</div>
+				<div class="info-table-evolution-cell" id="country_confirmed_new"
+					style="color: red;"></div>
+				<div class="info-table-evolution-cell" id="country_deaths_new"></div>
+				<div class="info-table-evolution-cell" id="country_recovered_new"
+					style="color: green;"></div>
+				<div class="info-table-evolution-cell" id="country_still_sick_new"
+					style="color: orange;"></div>
+			</div>
+		</div>
+		<br />
+		<canvas id="canvasCoronaCountry"></canvas>
+		<br />
+		<div id="country-slider-range"></div>
+	</div>
+
+	<div id="footer" class="footer"></div>
+
+</body>
+
+</html>

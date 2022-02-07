@@ -1,1 +1,1 @@
-"# corona-ro-api" 
+# Just a simple api for Romania corona data

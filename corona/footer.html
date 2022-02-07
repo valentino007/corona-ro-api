@@ -1,0 +1,25 @@
+<p>Widgets from <a href="https://jqueryui.com/">jQuery UI</a> | Charts from <a href="https://www.chartjs.org/">Chart.js</a> | Data from <a href="https://github.com/CSSEGISandData/COVID-19">CSSEGISandData</a></p>
+<p class="small">Data loaded on <span id="load_date"></span></p>
+<!-- <script type="text/javascript" src="js/jquery-3.1.1.js"></script> -->
+<script>
+$(document).ready(function () {
+	getMetaDataAjaxCall();
+});
+
+var load_date;
+function getMetaDataAjaxCall() {
+
+	return $.ajax({
+		url: "metadata.json",
+		method: "POST",
+
+		success: function (data) {
+			$('#load_date').text(data[0].load_date + ' EET');
+		},
+		error: function (data) {
+			console.log(data);
+		}
+	}); // end of ajax
+
+}
+</script>

@@ -1,0 +1,163 @@
+.selectmenu {
+	margin: 0 auto;
+	padding-top: 10px;
+	padding-bottom: 5px;
+}
+
+.header {
+	/* position: fixed; */
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	color: grey;
+	font-family: 'Open Sans', sans-serif;
+	text-align: center;
+	font-size: medium;
+	padding-top: 20px;
+	padding-bottom: 15px;
+}
+
+.footer {
+	/* position: fixed; */
+	margin-left: auto;
+	margin-right: auto;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	color: grey;
+	font-family: 'Open Sans', sans-serif;
+	text-align: center;
+	font-size: small;
+	padding-top: 15px;
+	padding-bottom: 10px;
+}
+
+p.small {
+	font-size: smaller;
+}
+
+.graph-container {
+	position: relative;
+	width: 70vw;
+	/* height: 40vh; */
+	height: auto;
+	margin: 0 auto;
+	padding-bottom: 15px;
+}
+
+.graph-container-small {
+	position: relative;
+	width: 95vw;
+	/* height: 40vh; */
+	height: auto;
+	margin: 0 auto;
+	padding-bottom: 5px;
+}
+
+.info-table {
+	display: table;
+	width: 70vw;
+	height: 5vh;
+	margin: 0 auto;
+	padding-bottom: 15px;
+}
+
+.info-table-small {
+	display: table;
+	width: 95vw;
+	height: auto;
+	margin: 0 auto;
+	padding-bottom: 5px;
+}
+
+.Title {
+	display: table-caption;
+	text-align: center;
+	font-size: larger;
+}
+
+.info-table-heading {
+	display: table-row;
+	font-weight: bold;
+	text-align: center;
+	color: grey;
+	word-wrap: break-word;
+}
+
+.info-table-row {
+	display: table-row;
+}
+
+.info-table-cell {
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: large;
+}
+
+.widget-table-cell {
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 15px;
+}
+
+.tab-widget-selection {
+	display: table;
+	margin-left: auto;
+	margin-right: auto;
+	align-self: center;
+}
+
+.widget-table-cell-small {
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-bottom: 2px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 10px;
+}
+
+.info-table-evolution-cell {
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: medium;
+	opacity: 0.75;
+}
+
+.hr {
+	padding-top: 20px;
+}
+
+.overflow {
+	height: 200px;
+	width: auto;
+}
+
+ul.ui-menu {
+	max-height: 300px !important;
+}
+
+.ui-widget {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 1.1em;
+}
+
+.legend {
+	font-family: 'Open Sans', sans-serif;
+	font-size: medium;
+}
