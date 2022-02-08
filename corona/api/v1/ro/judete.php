@@ -11,18 +11,25 @@ $db = $database->getConnection();
 
 $items = new Judet($db);
 
-$stmt = $items->read();
+$judet = $_POST['judet'];
+
+$stmt = $items->read($judet);
 $itemCount = $stmt->rowCount();
 
 if ($itemCount > 0) :
     http_response_code(200);
-    // $arr = array();
-    // $arr['response'] = array();
-    // $arr['count'] = $itemCount;
+    $arr = array();
+    $arr['response'] = array();
+    $arr['count'] = $itemCount;
+    $arr['method'] = $_SERVER["REQUEST_METHOD"];
 
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) :
+        $elem = $row;
+        array_push($arr['response'], $elem);
+    endwhile
+    ;
+    echo json_encode($arr);
 
-    echo json_encode($result);
 else :
     http_response_code(404);
 
