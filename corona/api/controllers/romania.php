@@ -1,6 +1,6 @@
 <?php
 
-class Judet
+class RomaniaInfo
 {
 
     private $conn;
@@ -45,7 +45,7 @@ class Judet
                 WHERE judet= :judet
                 ORDER BY DATA ASC
                 ) tab;";
-
+        
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(':judet', $judet);

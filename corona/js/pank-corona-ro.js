@@ -489,7 +489,7 @@ function getChartDataJudetEvolution(min, max) {
 function getJudetEvolutionAjaxCall(judet) {
 
 	return $.ajax({
-		url: "judet_daily_diff.php?judet=" + judet + "&avg=" + backDaysAvg,
+		url: "../api/v1/ro/judete.php?judet=" + judet,
 		method: "POST",
 
 		success: function (data) {
@@ -500,12 +500,12 @@ function getJudetEvolutionAjaxCall(judet) {
 			judetConfirmedAvgArray = [];
 			judetIncidenceArray = [];
 
-			for (var i in data) {
-				judetDatesArray.push(data[i].formatted_date);
-				judetConfirmedArray.push(data[i].confirmed);
-				judetConfirmedDiffArray.push(data[i].diff_confirmed);
-				judetConfirmedAvgArray.push(data[i].avg_confirmed);
-				judetIncidenceArray.push(data[i].incidence);
+			for (var i in data.response) {
+				judetDatesArray.push(data.response[i].formatted_date);
+				judetConfirmedArray.push(data.response[i].confirmed);
+				judetConfirmedDiffArray.push(data.response[i].diff_confirmed);
+				judetConfirmedAvgArray.push(data.response[i].avg_confirmed);
+				judetIncidenceArray.push(data.response[i].incidence);
 			}
 
 		},
