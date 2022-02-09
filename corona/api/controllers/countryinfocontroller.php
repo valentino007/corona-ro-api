@@ -12,7 +12,10 @@ class CountryInfoController
 
     public function read($country)
     {
-        $query = "SELECT countries.*
+        $query = "SELECT countries.iso
+                    ,countries.iso3
+                    ,countries.country as country_name
+                    ,countries.population
                     ,full_corona.confirmed
                     ,full_corona.deaths
                     ,full_corona.recovered
