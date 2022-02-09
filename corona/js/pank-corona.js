@@ -101,8 +101,8 @@ $(document).ready(function () {
 		dropdown.append('<option selected="true" value="null" disabled>Choose Country</option>'); // default disabled option
 		dropdown.prop('selectedIndex', 0);
 
-		$.getJSON('countries.json', function (return_data) {
-			$.each(return_data, function (key, value) {
+		$.getJSON('api/v1/global/countries.json', function (return_data) {
+			$.each(return_data.response, function (key, value) {
 				if (value.confirmed > 5) {
 					dropdown.append($('<option></option>').attr('value', value.iso).text(value.country));
 				}
@@ -814,11 +814,10 @@ function renderGraphGlobalDailyDiff(category, min, max) {
 function getGlobalEvolutionAjaxCall() {
 
 	return $.ajax({
-		url: "global_evolution.json",
-		method: "POST",
+		url: "api/v1/global/global_evolution.json",
 
 		success: function (data) {
-			console.log(data);
+			//console.log(data);
 
 			globalConfirmedArray = [];
 			globalRecoveredArray = [];
@@ -826,21 +825,21 @@ function getGlobalEvolutionAjaxCall() {
 			globalStillSickArray = [];
 			globalAvgConfirmedArray = [];
 
-			firstDayGlobal = data[0].formatted_date;
-			lastDay = new Date(data[data.length - 1].raw_date);
+			firstDayGlobal = data.response[0].formatted_date;
+			lastDay = new Date(data.response[data.response.length - 1].raw_date);
 
-			for (var i in data) {
-				globalDatesArray.push(data[i].formatted_date);
-				globalConfirmedArray.push(data[i].confirmed);
-				globalRecoveredArray.push(data[i].recovered);
-				globalDeathsArray.push(data[i].deaths);
-				globalStillSickArray.push(data[i].still_sick);
-				globalAvgConfirmedArray.push(data[i].avg_confirmed)
+			for (var i in data.response) {
+				globalDatesArray.push(data.response[i].formatted_date);
+				globalConfirmedArray.push(data.response[i].confirmed);
+				globalRecoveredArray.push(data.response[i].recovered);
+				globalDeathsArray.push(data.response[i].deaths);
+				globalStillSickArray.push(data.response[i].still_sick);
+				globalAvgConfirmedArray.push(data.response[i].avg_confirmed)
 				//diff
-				globalDiffConfirmedArray.push(data[i].confirmed_diff);
-				globalDiffRecoveredArray.push(data[i].recovered_diff);
-				globalDiffDeathsArray.push(data[i].deaths_diff);
-				globalDiffStillSickArray.push(data[i].still_sick_diff);
+				globalDiffConfirmedArray.push(data.response[i].confirmed_diff);
+				globalDiffRecoveredArray.push(data.response[i].recovered_diff);
+				globalDiffDeathsArray.push(data.response[i].deaths_diff);
+				globalDiffStillSickArray.push(data.response[i].still_sick_diff);
 			}
 
 		},
@@ -854,23 +853,22 @@ function getGlobalEvolutionAjaxCall() {
 function getGlobalCompareAjaxCall(category, limit) {
 
 	return $.ajax({
-		url: "compare.php?order=" + category + "&limit=" + limit,
-		method: "POST",
+		url: "api/v1/global/compare.php?order=" + category + "&limit=" + limit,
 
 		success: function (data) {
-			console.log(data);
+			//console.log(data);
 			globalCompareCountriesArray = [];
 			globalCompareConfirmedArray = [];
 			globalCompareRecoveredArray = [];
 			globalCompareDeathsArray = [];
 			globalCompareStillSickArray = [];
 
-			for (var i in data) {
-				globalCompareCountriesArray.push(data[i].country);
-				globalCompareConfirmedArray.push(data[i].confirmed);
-				globalCompareRecoveredArray.push(data[i].recovered);
-				globalCompareDeathsArray.push(data[i].deaths);
-				globalCompareStillSickArray.push(data[i].still_sick);
+			for (var i in data.response) {
+				globalCompareCountriesArray.push(data.response[i].country);
+				globalCompareConfirmedArray.push(data.response[i].confirmed);
+				globalCompareRecoveredArray.push(data.response[i].recovered);
+				globalCompareDeathsArray.push(data.response[i].deaths);
+				globalCompareStillSickArray.push(data.response[i].still_sick);
 			}
 
 		},

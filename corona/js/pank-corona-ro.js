@@ -298,7 +298,7 @@ function getRoEvolutionAjaxCall() {
 		url: "../api/v1/ro/ro_evolution.json",
 
 		success: function (data) {
-			console.log(data);
+			//console.log(data);
 
 			roConfirmedArray = [];
 			//roAvgConfirmedArray = [];
@@ -455,7 +455,7 @@ function getJudetEvolutionAjaxCall(judet) {
 		url: "../api/v1/ro/judete.php?judet=" + judet,
 
 		success: function (data) {
-			console.log(data);
+			//console.log(data);
 			judetDatesArray = [];
 			judetConfirmedArray = [];
 			judetConfirmedDiffArray = [];
