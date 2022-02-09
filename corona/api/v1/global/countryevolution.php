@@ -3,34 +3,28 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json; charset=UTF-8');
 
 include_once $_SERVER['DOCUMENT_ROOT'] . '/corona/api/config/database.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/corona/api/controllers/romania.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/corona/api/controllers/countryevolutioncontroller.php';
 
 $database = new Database();
 
 $db = $database->getConnection();
 
-$items = new RomaniaInfo($db);
+$items = new CountryEvolutionController($db);
 
-$judet = $_GET['judet'];
+$country = $_GET['country'];
 
-if (empty($_GET['avg']) || ! isset($_GET['avg'])) :
-    // a default value
-    $avg = 14;
-else :
-    // check if is a number !
-    $avg = $_GET['avg'];
-endif;
-
-$stmt = $items->read($judet, $avg);
+$stmt = $items->read($country);
 $itemCount = $stmt->rowCount();
 
 if ($itemCount > 0) :
     http_response_code(200);
 
+    // I should put here the call to CountryInfoController - and get the data inside this JSON response
+
     $arr = array();
     $arr['response'] = array();
     $arr['count'] = $itemCount;
-    $arr['avg'] = $avg;
+    $arr['countryISO2'] = $country;
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) :
         $elem = $row;

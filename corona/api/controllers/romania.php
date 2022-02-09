@@ -11,7 +11,7 @@ class RomaniaInfo
         $this->conn = $db;
     }
 
-    public function read($judet)
+    public function read($judet, $avg)
     {
         $query = "SELECT
                 judet
@@ -38,14 +38,14 @@ class RomaniaInfo
                 	SELECT confirmed
                 	FROM full_corona_ro prev
                 	WHERE judet = :judet
-                	AND prev.data = date_sub(cur.data, INTERVAL 14 DAY)
+                	AND prev.data = date_sub(cur.data, INTERVAL " . $avg . " DAY)
                 	ORDER BY DATa asc
-                	LIMIT 1 ), 0)) / 14, 2) avg_confirmed
+                	LIMIT 1 ), 0)) / " . $avg . ", 2) avg_confirmed
                 FROM full_corona_ro cur
                 WHERE judet= :judet
                 ORDER BY DATA ASC
                 ) tab;";
-        
+
         $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(':judet', $judet);

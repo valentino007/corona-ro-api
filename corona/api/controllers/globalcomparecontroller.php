@@ -1,6 +1,6 @@
 <?php
 
-class GlobalCompareInfo
+class GlobalCompareController
 {
 
     private $conn;

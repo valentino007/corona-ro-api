@@ -1093,11 +1093,10 @@ function getChartDataCountryEvolution(min, max) {
 function getCountryDailyDiffAjaxCall(country) {
 
 	return $.ajax({
-		url: "country_daily_diff.php?country=" + country + "&avg=" + backDaysAvg,
-		method: "POST",
+		url: "api/v1/global/countrydaily.php?country=" + country + "&avg=" + backDaysAvg,
 
 		success: function (data) {
-			console.log(data);
+			//console.log(data);
 			countryDatesArray = [];
 			countryDiffConfirmedArray = [];
 			countryDiffRecoveredArray = [];
@@ -1105,13 +1104,13 @@ function getCountryDailyDiffAjaxCall(country) {
 			countryDiffStillSickArray = [];
 			countryAvgConfirmedArray = [];
 
-			for (var i in data) {
-				countryDatesArray.push(data[i].formatted_date);
-				countryDiffConfirmedArray.push(data[i].diff_confirmed);
-				countryDiffRecoveredArray.push(data[i].diff_recovered);
-				countryDiffDeathsArray.push(data[i].diff_deaths);
-				countryDiffStillSickArray.push(data[i].diff_still_sick);
-				countryAvgConfirmedArray.push(data[i].avg_confirmed);
+			for (var i in data.response) {
+				countryDatesArray.push(data.response[i].formatted_date);
+				countryDiffConfirmedArray.push(data.response[i].diff_confirmed);
+				countryDiffRecoveredArray.push(data.response[i].diff_recovered);
+				countryDiffDeathsArray.push(data.response[i].diff_deaths);
+				countryDiffStillSickArray.push(data.response[i].diff_still_sick);
+				countryAvgConfirmedArray.push(data.response[i].avg_confirmed);
 			}
 
 		},
@@ -1123,30 +1122,29 @@ function getCountryDailyDiffAjaxCall(country) {
 function getCountryEvolutionAjaxCall(country) {
 
 	return $.ajax({
-		url: "country_evolution.php?country=" + country,
-		method: "POST",
+		url: "api/v1/global/countryevolution.php?country=" + country,
 
 		success: function (data) {
-			console.log(data);
+			//console.log(data);
 			countryDatesArray = [];
 			countryConfirmedArray = [];
 			countryRecoveredArray = [];
 			countryDeathsArray = [];
 			countryStillSickArray = [];
-			first_case = data[0].formatted_date;
-			first_case_confirmed = data[0].confirmed;
+			first_case = data.response[0].formatted_date;
+			first_case_confirmed = data.response[0].confirmed;
 			titleTextFirstCase = "";
 
 			if (first_case == firstDayGlobal && first_case_confirmed != 1) {
 				titleTextFirstCase += ' (first case appeared before ' + firstDayGlobal + ')';
 			}
 
-			for (var i in data) {
-				countryDatesArray.push(data[i].formatted_date);
-				countryConfirmedArray.push(data[i].confirmed);
-				countryRecoveredArray.push(data[i].recovered);
-				countryDeathsArray.push(data[i].deaths);
-				countryStillSickArray.push(data[i].still_sick);
+			for (var i in data.response) {
+				countryDatesArray.push(data.response[i].formatted_date);
+				countryConfirmedArray.push(data.response[i].confirmed);
+				countryRecoveredArray.push(data.response[i].recovered);
+				countryDeathsArray.push(data.response[i].deaths);
+				countryStillSickArray.push(data.response[i].still_sick);
 			}
 
 		},
@@ -1159,11 +1157,10 @@ function getCountryEvolutionAjaxCall(country) {
 function getCountryInfoAjaxCall(country) {
 
 	return $.ajax({
-		url: "country_data.php?country=" + country,
-		method: "POST",
+		url: "api/v1/global/countrydata.php?country=" + country,
 
 		success: function (data) {
-			console.log(data);
+			//console.log(data);
 			country_confirmed = parseInt(data[0].confirmed);
 			country_deaths = parseInt(data[0].deaths);
 			country_recovered = parseInt(data[0].recovered);

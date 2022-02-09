@@ -9,10 +9,18 @@ $database = new Database();
 
 $db = $database->getConnection();
 
-$items = new GlobalCompareInfo($db);
+$items = new GlobalCompareController($db);
 
 $limit = $_GET['limit'];
 $order = $_GET['order'];
+
+if (!isset($limit) || empty($limit)) :
+    $limit = 10;
+endif;
+
+if (!isset($order) || empty($order)) :
+    $order = "confirmed";
+endif;
 
 $stmt = $items->read($limit, $order);
 $itemCount = $stmt->rowCount();
