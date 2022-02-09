@@ -22,7 +22,7 @@ if ($itemCount > 0) :
     $arr = array();
     $arr['response'] = array();
     $arr['count'] = $itemCount;
-    $arr['method'] = $_SERVER["REQUEST_METHOD"];
+    //$arr['method'] = $_SERVER["REQUEST_METHOD"];
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) :
         $elem = $row;

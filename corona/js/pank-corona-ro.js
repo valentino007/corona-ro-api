@@ -77,8 +77,8 @@ $(document).ready(function () {
 		dropdown.append('<option selected="true" value="null" disabled>Alege jude\u021B</option>'); // default disabled option
 		dropdown.prop('selectedIndex', 0);
 
-		$.getJSON('ro_judete.json', function (return_data) {
-			$.each(return_data, function (key, value) {
+		$.getJSON('../api/v1/ro/ro_judete.json', function (return_data) {
+			$.each(return_data.response, function (key, value) {
 				dropdown.append($('<option></option>').attr('value', value.judet).text(value.judet_nume));
 			})
 		});
@@ -156,12 +156,6 @@ function buildJudetSlider() {
 		slide: function (event, ui) {
 			renderGraphJudetEvolution(ui.values[0], ui.values[1]);
 		}
-	});
-}
-
-function fillGraphGlobalCompare(category, limit) {
-	return $.when(getGlobalCompareAjaxCall(category, limit)).done(function () {
-		renderGraphGlobalCompare(category);
 	});
 }
 
@@ -301,8 +295,7 @@ function renderGraphRoEvolution(min, max) {
 function getRoEvolutionAjaxCall() {
 
 	return $.ajax({
-		url: "../ro/ro_evolution.json",
-		method: "POST",
+		url: "../api/v1/ro/ro_evolution.json",
 
 		success: function (data) {
 			console.log(data);
@@ -311,46 +304,16 @@ function getRoEvolutionAjaxCall() {
 			//roAvgConfirmedArray = [];
 			//roDiffConfirmedArray = [];
 
-			roFirstDay = data[0].formatted_date;
-			roLastDay = new Date(data[data.length - 1].raw_date);
+			roFirstDay = data.response[0].formatted_date;
+			roLastDay = new Date(data.response[data.response.length - 1].raw_date);
 
-			for (var i in data) {
-				roDatesArray.push(data[i].formatted_date);
-				roConfirmedArray.push(data[i].confirmed);
+			for (var i in data.response) {
+				roDatesArray.push(data.response[i].formatted_date);
+				roConfirmedArray.push(data.response[i].confirmed);
 				// avg
-				roAvgConfirmedArray.push(data[i].avg_confirmed);
+				roAvgConfirmedArray.push(data.response[i].avg_confirmed);
 				//diff
-				roDiffConfirmedArray.push(data[i].confirmed_diff);
-			}
-
-		},
-		error: function (data) {
-			console.log(data);
-		}
-	}); // end of ajax
-
-}
-
-function getGlobalCompareAjaxCall(category, limit) {
-
-	return $.ajax({
-		url: "compare.php?order=" + category + "&limit=" + limit,
-		method: "POST",
-
-		success: function (data) {
-			console.log(data);
-			globalCompareCountriesArray = [];
-			globalCompareConfirmedArray = [];
-			globalCompareRecoveredArray = [];
-			globalCompareDeathsArray = [];
-			globalCompareStillSickArray = [];
-
-			for (var i in data) {
-				globalCompareCountriesArray.push(data[i].country);
-				globalCompareConfirmedArray.push(data[i].confirmed);
-				globalCompareRecoveredArray.push(data[i].recovered);
-				globalCompareDeathsArray.push(data[i].deaths);
-				globalCompareStillSickArray.push(data[i].still_sick);
+				roDiffConfirmedArray.push(data.response[i].confirmed_diff);
 			}
 
 		},
@@ -490,7 +453,6 @@ function getJudetEvolutionAjaxCall(judet) {
 
 	return $.ajax({
 		url: "../api/v1/ro/judete.php?judet=" + judet,
-		method: "POST",
 
 		success: function (data) {
 			console.log(data);

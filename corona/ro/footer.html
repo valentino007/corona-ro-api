@@ -1,25 +1,37 @@
-<p>Widgets from <a href="https://jqueryui.com/">jQuery UI</a> | Charts from <a href="https://www.chartjs.org/">Chart.js</a> | Data from <a href="https://datelazi.ro/">Date La Zi</a></p>
-<p class="small">Data loaded on <span id="load_date"></span></p>
+<p>
+	Widgets from <a href="https://jqueryui.com/">jQuery UI</a> | Charts
+	from <a href="https://www.chartjs.org/">Chart.js</a> | Data from <a
+		href="https://datelazi.ro/">Date La Zi</a>
+</p>
+<p class="small">
+	Data loaded on <span id="load_date"></span>
+</p>
 <!-- <script type="text/javascript" src="js/jquery-3.1.1.js"></script> -->
 <script>
-$(document).ready(function () {
-	getMetaDataAjaxCall();
-});
+	$(document).ready(function() {
+		getMetaDataAjaxCall();
+	});
 
-var load_date;
-function getMetaDataAjaxCall() {
+	var load_date;
+	function getMetaDataAjaxCall() {
 
-	return $.ajax({
-		url: "../metadata.json",
-		method: "POST",
+		return $.ajax({
+			url : "../api/v1/ro/ro_evolution.json",
 
-		success: function (data) {
-			$('#load_date').text(data[0].load_date + ' EET');
-		},
-		error: function (data) {
-			console.log(data);
-		}
-	}); // end of ajax
+			success : function(data) {
+				$('#load_date').text(
+						("0" + data.load_date.date.day).slice(-2) + "/"
+								+ ("0" + data.load_date.date.month).slice(-2)
+								+ "/" + data.load_date.date.year + " "
+								+ ("0" + data.load_date.time.hour).slice(-2)
+								+ ":"
+								+ ("0" + data.load_date.time.minute).slice(-2)
+								+ ":" + data.load_date.time.second + ' EET');
+			},
+			error : function(data) {
+				console.log(data);
+			}
+		}); // end of ajax
 
-}
+	}
 </script>
