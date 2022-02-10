@@ -9,7 +9,7 @@ I. [http://valipank.ro/corona/api/v1/ro/ro_judete.json](http://valipank.ro/coron
 - full name
 - confirmed cases when generating the file
 - incidence
-- there is also a count (it"s always 42 🙂 )
+- there is also a count (it's always 42 🙂 )
 - load_date is the date wen the file was generated
 
 In a near future I'd like also to implement a swagger-like documentation for the exposed APIs.
@@ -23,3 +23,11 @@ In this repo I also have the source code for the websites mentiond above.
 ---
 
 Please feel free to suggest anything that might be usefull.
+
+---
+
+*my TODO list*
+
+- add date parameter in [http://valipank.ro/corona/api/v1/ro/ro_judete.json](http://valipank.ro/corona/api/v1/ro/ro_judete.json) - now it shows only the last 
+- 
+
