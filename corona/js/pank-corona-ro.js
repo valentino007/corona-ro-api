@@ -77,7 +77,7 @@ $(document).ready(function () {
 		dropdown.append('<option selected="true" value="null" disabled>Alege jude\u021B</option>'); // default disabled option
 		dropdown.prop('selectedIndex', 0);
 
-		$.getJSON('../api/v1/ro/ro_judete.json', function (return_data) {
+		$.getJSON('../../api/json/ro_judete.json', function (return_data) {
 			$.each(return_data.response, function (key, value) {
 				dropdown.append($('<option></option>').attr('value', value.judet).text(value.judet_nume));
 			})
@@ -295,7 +295,7 @@ function renderGraphRoEvolution(min, max) {
 function getRoEvolutionAjaxCall() {
 
 	return $.ajax({
-		url: "../api/v1/ro/ro_evolution.json",
+		url: "../../api/json/ro_evolution.json",
 
 		success: function (data) {
 			//console.log(data);

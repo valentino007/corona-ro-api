@@ -101,7 +101,7 @@ $(document).ready(function () {
 		dropdown.append('<option selected="true" value="null" disabled>Choose Country</option>'); // default disabled option
 		dropdown.prop('selectedIndex', 0);
 
-		$.getJSON('api/v1/global/countries.json', function (return_data) {
+		$.getJSON('../api/json/countries.json', function (return_data) {
 			$.each(return_data.response, function (key, value) {
 				if (value.confirmed > 5) {
 					dropdown.append($('<option></option>').attr('value', value.iso).text(value.country));
@@ -814,7 +814,7 @@ function renderGraphGlobalDailyDiff(category, min, max) {
 function getGlobalEvolutionAjaxCall() {
 
 	return $.ajax({
-		url: "api/v1/global/global_evolution.json",
+		url: "../api/json/global_evolution.json",
 
 		success: function (data) {
 			//console.log(data);
