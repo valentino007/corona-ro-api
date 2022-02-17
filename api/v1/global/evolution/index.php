@@ -2,35 +2,19 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json; charset=UTF-8');
 
-include_once $_SERVER['DOCUMENT_ROOT'] . '/corona/api/config/database.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/corona/api/controllers/romania.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/corona/api/modules/AltoRouter/AltoRouter.php';
-
-$router = new AltoRouter();
-
-$router->setBasePath('/corona/api/v1/ro/judet');
-
-$router->map('GET', '/', function () {
-    require __DIR__ . '../judete.php';
-});
+include_once $_SERVER['DOCUMENT_ROOT'] . '/api/config/databaseCorona.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/api/controllers/countryevolutioncontroller.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/api/controllers/countryinfocontroller.php';
 
 $database = new Database();
 
 $db = $database->getConnection();
 
-$items = new RomaniaInfo($db);
+$items = new CountryEvolutionController($db);
 
-$judet = $_GET['judet'];
+$country = $_GET['country'];
 
-if (empty($_GET['avg']) || ! isset($_GET['avg'])) :
-    // a default value
-    $avg = 14;
-else :
-    // check if is a number !
-    $avg = $_GET['avg'];
-endif;
-
-$stmt = $items->read($judet, $avg);
+$stmt = $items->read($country);
 $itemCount = $stmt->rowCount();
 
 if ($itemCount > 0) :
@@ -39,13 +23,20 @@ if ($itemCount > 0) :
     $arr = array();
     $arr['response'] = array();
     $arr['count'] = $itemCount;
-    $arr['avg'] = $avg;
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) :
         $elem = $row;
         array_push($arr['response'], $elem);
     endwhile
     ;
+
+    // call to CountryInfoController
+    $info = new CountryInfoController($db);
+    $stmtinfo = $info->read($country);
+    $resultinfo = $stmtinfo->fetch(PDO::FETCH_ASSOC);
+
+    $arr['country_info'] = $resultinfo;
+
     echo json_encode($arr);
 
 else :

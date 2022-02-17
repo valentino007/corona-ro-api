@@ -2,8 +2,8 @@
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json; charset=UTF-8');
 
-include_once $_SERVER['DOCUMENT_ROOT'] . '/corona/api/config/database.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . '/corona/api/controllers/countryinfocontroller.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/api/config/databaseCorona.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/api/controllers/countryinfocontroller.php';
 
 $database = new Database();
 

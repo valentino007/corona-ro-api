@@ -452,7 +452,7 @@ function getChartDataJudetEvolution(min, max) {
 function getJudetEvolutionAjaxCall(judet) {
 
 	return $.ajax({
-		url: "../api/v1/ro/judete.php?judet=" + judet,
+		url: "../../api/v1/judet?judet=" + judet,
 
 		success: function (data) {
 			//console.log(data);

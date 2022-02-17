@@ -853,7 +853,7 @@ function getGlobalEvolutionAjaxCall() {
 function getGlobalCompareAjaxCall(category, limit) {
 
 	return $.ajax({
-		url: "api/v1/global/compare.php?order=" + category + "&limit=" + limit,
+		url: "../../api/v1/global/compare/?order=" + category + "&limit=" + limit,
 
 		success: function (data) {
 			//console.log(data);
@@ -1093,7 +1093,7 @@ function getChartDataCountryEvolution(min, max) {
 function getCountryDailyDiffAjaxCall(country) {
 
 	return $.ajax({
-		url: "api/v1/global/countrydaily.php?country=" + country + "&avg=" + backDaysAvg,
+		url: "../api/v1/global/countrydaily/?country=" + country + "&avg=" + backDaysAvg,
 
 		success: function (data) {
 			//console.log(data);
@@ -1122,7 +1122,7 @@ function getCountryDailyDiffAjaxCall(country) {
 function getCountryEvolutionAjaxCall(country) {
 
 	return $.ajax({
-		url: "api/v1/global/countryevolution.php?country=" + country,
+		url: "../api/v1/global/evolution/?country=" + country,
 
 		success: function (data) {
 			//console.log(data);
@@ -1157,7 +1157,7 @@ function getCountryEvolutionAjaxCall(country) {
 function getCountryInfoAjaxCall(country) {
 
 	return $.ajax({
-		url: "api/v1/global/countrydata.php?country=" + country,
+		url: "../api/v1/global/countrydata/?country=" + country,
 
 		success: function (data) {
 			//console.log(data);
