@@ -67,14 +67,22 @@ var screenWidthResizeDiv = 680;
 // backward days for average
 var backDaysAvg = 14;
 
+function formatDate(stringDate) {
+	var myDate = new Date(stringDate);
+
+	return ("0" + myDate.getDate()).slice(-2) +
+		("0" + (myDate.getMonth() + 1)).slice(-2) +
+		myDate.getFullYear();
+}
+
 function setOpacity(rgba) {
 	var opacity = 0.1;
 	return rgba.substr(0, rgba.lastIndexOf(",") + 1) + " " + opacity + ")";
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
 
-	$(function () {
+	$(function() {
 		$("input").checkboxradio({
 			icon: false
 		});
@@ -87,7 +95,7 @@ $(document).ready(function () {
 		$("#footer").load("footer.html");
 	}
 
-	$.when(getGlobalEvolutionAjaxCall()).done(function () {
+	$.when(getGlobalEvolutionAjaxCall()).done(function() {
 		fillGlobalInfo();
 		renderGraphGlobalEvolution();
 		buildGlobalSlider();
@@ -101,17 +109,15 @@ $(document).ready(function () {
 		dropdown.append('<option selected="true" value="null" disabled>Choose Country</option>'); // default disabled option
 		dropdown.prop('selectedIndex', 0);
 
-		$.getJSON('../api/json/countries.json', function (return_data) {
-			$.each(return_data.response, function (key, value) {
-				if (value.confirmed > 5) {
-					dropdown.append($('<option></option>').attr('value', value.iso).text(value.country));
-				}
+		$.getJSON('../api/json/countries.json', function(return_data) {
+			$.each(return_data.response, function(key, value) {
+				dropdown.append($('<option></option>').attr('value', value.iso).text(value.country));
 			})
 		});
 
 		$("#country").selectmenu().addClass("overflow");
 
-		$("#country").on("selectmenuchange", function () {
+		$("#country").on("selectmenuchange", function() {
 			// get data & render graph
 			fillGraphCountry($('#country option:selected').val(), $("[name='radio-country']:checked").val(), $('#countryCategory option:selected').val());
 		});
@@ -128,7 +134,7 @@ $(document).ready(function () {
 		 * if the current radio is set on 'global-daily-growth' renders the global daily difference graph (the data is already in page from the very begining)
 		 * if the current radio is set on 'global-compare' reloads first the data (as json from SQL via Ajax) then renders the compare graph
 		 *  */
-		$("#globalCategory").on("selectmenuchange", function () {
+		$("#globalCategory").on("selectmenuchange", function() {
 			if ($("[name='radio-global']:checked").val() == 'global-daily-growth') {
 				renderGraphGlobalDailyDiff($("#globalCategory").val(), $("#global-slider-range").slider('values', 0), $("#global-slider-range").slider('values', 1));
 			} else if ($("[name='radio-global']:checked").val() == 'global-compare') {
@@ -140,7 +146,7 @@ $(document).ready(function () {
 		 * on limit dropdown change: 
 		 * (the current radio is set on 'global-compare'): reloads first the data (as json from SQL via Ajax) then renders the compare graph
 		 *  */
-		$("#limit").on("selectmenuchange", function () {
+		$("#limit").on("selectmenuchange", function() {
 			if ($("[name='radio-global']:checked").val() == 'global-compare') {
 				fillGraphGlobalCompare($("#globalCategory").val(), $("#limit").val());
 			}
@@ -153,7 +159,7 @@ $(document).ready(function () {
 	$("#limit").selectmenu("disable");
 	$("#countryCategory").selectmenu("disable");
 
-	$("[name='radio-global']").on("change", function () {
+	$("[name='radio-global']").on("change", function() {
 		var global_radio_value = $("[name='radio-global']:checked").val();
 
 		switch (global_radio_value) {
@@ -189,7 +195,7 @@ $(document).ready(function () {
 				$("#global-slider-range").slider('values', 0, 0);
 				$("#global-slider-range").slider('values', 1, (globalDatesArray.length - 1));
 				// renders global compare graph
-				$.when(getGlobalCompareAjaxCall($("#globalCategory").val(), $("#limit").val())).done(function () {
+				$.when(getGlobalCompareAjaxCall($("#globalCategory").val(), $("#limit").val())).done(function() {
 					renderGraphGlobalCompare($("#globalCategory").val());
 				});
 				break;
@@ -197,7 +203,7 @@ $(document).ready(function () {
 
 	});
 
-	$("[name='radio-country']").on("change", function () {
+	$("[name='radio-country']").on("change", function() {
 
 		// reset country slider when changing the country radio selection
 		if ($('#country option:selected').val() != "null" && typeof $("#country-slider-range").slider("instance") != "undefined") {
@@ -208,7 +214,7 @@ $(document).ready(function () {
 		fillGraphCountry($('#country option:selected').val(), $("[name='radio-country']:checked").val(), $('#countryCategory option:selected').val());
 	});
 
-	$("#countryCategory").on("selectmenuchange", function () {
+	$("#countryCategory").on("selectmenuchange", function() {
 		// no need to make another request - the data is already in the global arrays !
 		if (typeof $("#country-slider-range").slider("instance") != "undefined") {
 			renderGraphCountryDailyDiff($('#countryCategory option:selected').val(), $("#country-slider-range").slider('values', 0), $("#country-slider-range").slider('values', 1));
@@ -262,7 +268,7 @@ function buildGlobalSlider() {
 		min: 0,
 		max: (globalDatesArray.length - 1),
 		values: [0, (globalDatesArray.length - 1)],
-		slide: function (event, ui) {
+		slide: function(event, ui) {
 			if ($("[name='radio-global']:checked").val() == "global-evolution") {
 				renderGraphGlobalEvolution(ui.values[0], ui.values[1]);
 			} else if ($("[name='radio-global']:checked").val() == "global-daily-growth") {
@@ -282,7 +288,7 @@ function buildCountrySlider() {
 		min: 0,
 		max: (countryDatesArray.length - 1),
 		values: [0, (countryDatesArray.length - 1)],
-		slide: function (event, ui) {
+		slide: function(event, ui) {
 			if ($("[name='radio-country']:checked").val() == "country-evolution") {
 				renderGraphCountryEvolution(ui.values[0], ui.values[1]);
 			} else if ($("[name='radio-country']:checked").val() == "country-daily-growth") {
@@ -293,7 +299,7 @@ function buildCountrySlider() {
 }
 
 function fillGraphGlobalCompare(category, limit) {
-	return $.when(getGlobalCompareAjaxCall(category, limit)).done(function () {
+	return $.when(getGlobalCompareAjaxCall(category, limit)).done(function() {
 		renderGraphGlobalCompare(category);
 	});
 }
@@ -303,7 +309,7 @@ function fillGraphCountry(country, country_radio_value, category) {
 		switch (country_radio_value) {
 			case "country-evolution":
 				$("#countryCategory").selectmenu("disable");
-				$.when(getCountryEvolutionAjaxCall(country), getCountryInfoAjaxCall(country)).done(function () {
+				$.when(getCountryEvolutionAjaxCall(country), getCountryInfoAjaxCall(country)).done(function() {
 					fillCountryInfo();
 					renderGraphCountryEvolution();
 					buildCountrySlider();
@@ -311,7 +317,7 @@ function fillGraphCountry(country, country_radio_value, category) {
 				break;
 			case "country-daily-growth":
 				$("#countryCategory").selectmenu("enable");
-				$.when(getCountryDailyDiffAjaxCall(country), getCountryInfoAjaxCall(country)).done(function () {
+				$.when(getCountryDailyDiffAjaxCall(country), getCountryInfoAjaxCall(country)).done(function() {
 					fillCountryInfo();
 					renderGraphCountryDailyDiff(category);
 					buildCountrySlider();
@@ -419,7 +425,7 @@ function getChartDataGlobalDailyDiff(category, min, max) {
 		barChartDataGlobalCoronaDiff = {
 			labels: datesArray,
 			datasets: [
-				{	
+				{
 					borderWidth: 1,
 					backgroundColor: confirmedBackGroundColor,
 					borderColor: confirmedColor,
@@ -445,9 +451,9 @@ function getChartDataGlobalDailyDiff(category, min, max) {
 				}
 			]
 		};
-		
+
 	} else {
-		
+
 		switch (category) {
 			case "confirmed":
 				graphData = confirmedArray;
@@ -470,7 +476,7 @@ function getChartDataGlobalDailyDiff(category, min, max) {
 				backColor = stillSickBackGroudColor;
 				break;
 		}
-		
+
 		if (category == "confirmed") {
 			barChartDataGlobalCoronaDiff = {
 				labels: datesArray,
@@ -528,7 +534,7 @@ function getChartDataCountryDailyDiff(category, min, max) {
 			recoveredArray.push(countryDiffRecoveredArray[i]);
 			deathsArray.push(countryDiffDeathsArray[i]);
 			stillSickArray.push(countryDiffStillSickArray[i]);
-			avgConfirmedArray.push(countryAvgConfirmedArray[i]); 
+			avgConfirmedArray.push(countryAvgConfirmedArray[i]);
 		}
 	} else {
 		datesArray = countryDatesArray;
@@ -542,11 +548,11 @@ function getChartDataCountryDailyDiff(category, min, max) {
 	var graphData;
 	var barColor;
 	var backColor;
-	
+
 	barChartDataCountryCoronaDiff = null;
-	
+
 	if (category == "stacked") {
-		
+
 		barChartDataCountryCoronaDiff = {
 			labels: datesArray,
 			datasets: [
@@ -573,12 +579,12 @@ function getChartDataCountryDailyDiff(category, min, max) {
 					fill: false,
 					data: deathsArray,
 					stack: 1
-				}	
+				}
 			]
 		};
-		
+
 	} else {
-		
+
 		switch (category) {
 			case "confirmed":
 				graphData = confirmedArray;
@@ -601,34 +607,34 @@ function getChartDataCountryDailyDiff(category, min, max) {
 				backColor = stillSickBackGroudColor;
 				break;
 		}
-		
-		var dailyDiffDatasets= [
-				{
-					borderWidth: 1,
-					backgroundColor: backColor,
-					borderColor: barColor,
-					fill: false,
-					data: graphData
-				}];
-				
+
+		var dailyDiffDatasets = [
+			{
+				borderWidth: 1,
+				backgroundColor: backColor,
+				borderColor: barColor,
+				fill: false,
+				data: graphData
+			}];
+
 		var avgDataset = {
-					backgroundColor: confirmedAvgBackGroudColor,
-					borderColor: confirmedAvgColor,				
-					label: backDaysAvg + ' days avg',
-					type: 'line',
-					fill: false,
-					data: avgConfirmedArray
-				};	
-				
-		if (category == "confirmed"){
-			dailyDiffDatasets.push(avgDataset);			
-		}		
-				
+			backgroundColor: confirmedAvgBackGroudColor,
+			borderColor: confirmedAvgColor,
+			label: backDaysAvg + ' days avg',
+			type: 'line',
+			fill: false,
+			data: avgConfirmedArray
+		};
+
+		if (category == "confirmed") {
+			dailyDiffDatasets.push(avgDataset);
+		}
+
 		barChartDataCountryCoronaDiff = {
 			labels: datesArray,
-			datasets: dailyDiffDatasets 
+			datasets: dailyDiffDatasets
 		};
-		
+
 	}
 
 	return barChartDataCountryCoronaDiff;
@@ -644,7 +650,7 @@ function getChartDataGlobalCompare(category) {
 	var barChartDataGlobalCompare = null;
 
 	if (category == "stacked") {
-		
+
 		barChartDataGlobalCompare = {
 			labels: globalCompareCountriesArray,
 			datasets: [
@@ -671,9 +677,9 @@ function getChartDataGlobalCompare(category) {
 				}
 			]
 		};
-		
+
 	} else {
-		
+
 		switch (category) {
 			case "confirmed":
 				graphData = globalCompareConfirmedArray;
@@ -696,7 +702,7 @@ function getChartDataGlobalCompare(category) {
 				backColor = stillSickBackGroudColor;
 				break;
 		}
-		
+
 		barChartDataGlobalCompare = {
 			labels: globalCompareCountriesArray,
 			datasets: [
@@ -708,7 +714,7 @@ function getChartDataGlobalCompare(category) {
 				}
 			]
 		};
-		
+
 	}
 
 	return barChartDataGlobalCompare;
@@ -722,8 +728,8 @@ function renderGraphGlobalEvolution(min, max) {
 
 	var ctxCoronaCasesGlobal = $("#canvasCoronaGlobal");
 
-	var daysCount = ((typeof (max) == 'undefined') ? (globalDatesArray.length - 1) : max) - 
-					((typeof (min) == 'undefined') ? 0 : min) + 1;
+	var daysCount = ((typeof (max) == 'undefined') ? (globalDatesArray.length - 1) : max) -
+		((typeof (min) == 'undefined') ? 0 : min) + 1;
 
 	var globalTitleText = 'COVID-19 global evolution between ' +
 		((typeof (min) == 'undefined') ? globalDatesArray[0] : globalDatesArray[min]) + ' and ' +
@@ -771,9 +777,9 @@ function renderGraphGlobalDailyDiff(category, min, max) {
 
 	var ctxCoronaCasesGlobal = $("#canvasCoronaGlobal");
 
-	var daysCount = ((typeof (max) == 'undefined') ? (globalDatesArray.length - 1) : max) - 
-					((typeof (min) == 'undefined') ? 0 : min) + 1;
-	
+	var daysCount = ((typeof (max) == 'undefined') ? (globalDatesArray.length - 1) : max) -
+		((typeof (min) == 'undefined') ? 0 : min) + 1;
+
 	var categoryText = $("#globalCategory option:selected").val() == "stacked" ? "" : $("#globalCategory option:selected").text().toLowerCase() + " ";
 
 	var globalTitleText = 'COVID-19 daily ' + categoryText + 'cases between ' +
@@ -816,7 +822,7 @@ function getGlobalEvolutionAjaxCall() {
 	return $.ajax({
 		url: "../api/json/global_evolution.json",
 
-		success: function (data) {
+		success: function(data) {
 			//console.log(data);
 
 			globalConfirmedArray = [];
@@ -825,11 +831,11 @@ function getGlobalEvolutionAjaxCall() {
 			globalStillSickArray = [];
 			globalAvgConfirmedArray = [];
 
-			firstDayGlobal = data.response[0].formatted_date;
-			lastDay = new Date(data.response[data.response.length - 1].raw_date);
+			firstDayGlobal = formatDate(data.response[0].date);
+			lastDay = new Date(data.response[data.response.length - 1].date);
 
 			for (var i in data.response) {
-				globalDatesArray.push(data.response[i].formatted_date);
+				globalDatesArray.push(formatDate(data.response[i].date));
 				globalConfirmedArray.push(data.response[i].confirmed);
 				globalRecoveredArray.push(data.response[i].recovered);
 				globalDeathsArray.push(data.response[i].deaths);
@@ -843,7 +849,7 @@ function getGlobalEvolutionAjaxCall() {
 			}
 
 		},
-		error: function (data) {
+		error: function(data) {
 			console.log(data);
 		}
 	}); // end of ajax
@@ -855,7 +861,7 @@ function getGlobalCompareAjaxCall(category, limit) {
 	return $.ajax({
 		url: "../../api/v1/global/compare/?order=" + category + "&limit=" + limit,
 
-		success: function (data) {
+		success: function(data) {
 			//console.log(data);
 			globalCompareCountriesArray = [];
 			globalCompareConfirmedArray = [];
@@ -872,7 +878,7 @@ function getGlobalCompareAjaxCall(category, limit) {
 			}
 
 		},
-		error: function (data) {
+		error: function(data) {
 			console.log(data);
 		}
 	}); // end of ajax
@@ -886,7 +892,7 @@ function renderGraphGlobalCompare(category) {
 	}
 
 	var ctxCoronaCasesGlobal = $("#canvasCoronaGlobal");
-	
+
 	var categoryText = $("#globalCategory option:selected").val() == "stacked" ? "all" : $("#globalCategory option:selected").text().toLowerCase();
 
 	/** for global compare graph I'm using the entire period (the slider is disabled) */
@@ -917,8 +923,8 @@ function renderGraphGlobalCompare(category) {
 					gridLines: {
 						drawOnChartArea: true
 					}
-				}]			
-		    },
+				}]
+			},
 		}
 	});
 
@@ -932,8 +938,8 @@ function renderGraphCountryEvolution(min, max) {
 		coronaCountryChart.destroy();
 	}
 
-	var daysCount = ((typeof (max) == 'undefined') ? (countryDatesArray.length - 1) : max) - 
-					((typeof (min) == 'undefined') ? 0 : min) + 1;
+	var daysCount = ((typeof (max) == 'undefined') ? (countryDatesArray.length - 1) : max) -
+		((typeof (min) == 'undefined') ? 0 : min) + 1;
 
 	var countryTitleText = $("#country option:selected").text() + " COVID-19 evolution between " +
 		((typeof (min) == 'undefined') ? countryDatesArray[0] : countryDatesArray[min]) + ' and ' +
@@ -967,7 +973,7 @@ function renderGraphCountryEvolution(min, max) {
 					gridLines: {
 						drawOnChartArea: true
 					}
-				}]				
+				}]
 			}
 		},
 	});
@@ -982,8 +988,8 @@ function renderGraphCountryDailyDiff(category, min, max) {
 		coronaCountryChart.destroy();
 	}
 
-	var daysCount = ((typeof (max) == 'undefined') ? (countryDatesArray.length - 1) : max) - 
-					((typeof (min) == 'undefined') ? 0 : min) + 1;
+	var daysCount = ((typeof (max) == 'undefined') ? (countryDatesArray.length - 1) : max) -
+		((typeof (min) == 'undefined') ? 0 : min) + 1;
 
 	var categoryText = $("#countryCategory option:selected").val() == "stacked" ? "" : $("#countryCategory option:selected").text().toLowerCase() + " ";
 
@@ -991,11 +997,11 @@ function renderGraphCountryDailyDiff(category, min, max) {
 		categoryText + "cases between " +
 		((typeof (min) == 'undefined') ? countryDatesArray[0] : countryDatesArray[min]) + ' and ' +
 		((typeof (max) == 'undefined') ? countryDatesArray[countryDatesArray.length - 1] : countryDatesArray[max]);
-		
+
 	if ($("#countryCategory option:selected").val() == "confirmed") {
 		countryTitleText += " & " + backDaysAvg + " days average";
-	}	
-	
+	}
+
 	countryTitleText += " (" + daysCount + " days)";
 
 	coronaCountryChart = new Chart(ctxCoronaCasesByCountry, {
@@ -1022,7 +1028,7 @@ function renderGraphCountryDailyDiff(category, min, max) {
 					gridLines: {
 						drawOnChartArea: true
 					}
-				}]				
+				}]
 			}
 		},
 	});
@@ -1095,7 +1101,7 @@ function getCountryDailyDiffAjaxCall(country) {
 	return $.ajax({
 		url: "../api/v1/global/countrydaily/?country=" + country + "&avg=" + backDaysAvg,
 
-		success: function (data) {
+		success: function(data) {
 			//console.log(data);
 			countryDatesArray = [];
 			countryDiffConfirmedArray = [];
@@ -1114,7 +1120,7 @@ function getCountryDailyDiffAjaxCall(country) {
 			}
 
 		},
-		error: function (data) {
+		error: function(data) {
 			console.log(data);
 		}
 	}); // end of ajax
@@ -1124,14 +1130,14 @@ function getCountryEvolutionAjaxCall(country) {
 	return $.ajax({
 		url: "../api/v1/global/evolution/?country=" + country,
 
-		success: function (data) {
+		success: function(data) {
 			//console.log(data);
 			countryDatesArray = [];
 			countryConfirmedArray = [];
 			countryRecoveredArray = [];
 			countryDeathsArray = [];
 			countryStillSickArray = [];
-			first_case = data.response[0].formatted_date;
+			first_case = formatDate(data.response[0].date);
 			first_case_confirmed = data.response[0].confirmed;
 			titleTextFirstCase = "";
 
@@ -1140,7 +1146,7 @@ function getCountryEvolutionAjaxCall(country) {
 			}
 
 			for (var i in data.response) {
-				countryDatesArray.push(data.response[i].formatted_date);
+				countryDatesArray.push(formatDate(data.response[i].date));
 				countryConfirmedArray.push(data.response[i].confirmed);
 				countryRecoveredArray.push(data.response[i].recovered);
 				countryDeathsArray.push(data.response[i].deaths);
@@ -1148,7 +1154,7 @@ function getCountryEvolutionAjaxCall(country) {
 			}
 
 		},
-		error: function (data) {
+		error: function(data) {
 			console.log(data);
 		}
 	}); // end of ajax
@@ -1159,7 +1165,7 @@ function getCountryInfoAjaxCall(country) {
 	return $.ajax({
 		url: "../api/v1/global/countrydata/?country=" + country,
 
-		success: function (data) {
+		success: function(data) {
 			//console.log(data);
 			country_confirmed = parseInt(data[0].confirmed);
 			country_deaths = parseInt(data[0].deaths);
@@ -1170,7 +1176,7 @@ function getCountryInfoAjaxCall(country) {
 			country_new_recovered = parseInt(data[0].new_recovered);
 			country_new_still_sick = parseInt(data[0].new_still_sick);
 		},
-		error: function (data) {
+		error: function(data) {
 			console.log(data);
 		}
 	}); // end of ajax
@@ -1178,26 +1184,26 @@ function getCountryInfoAjaxCall(country) {
 }
 
 function fillCountryInfo() {
-	
+
 	var countryIsoValue = $("#country option:selected").val();
 	var countryName = $("#country option:selected").text();
-	
+
 	if (countryIsoValue == 'RO') {
 		$('#country_name').html($("<a></a>").attr("href", "/corona/ro").attr("target", "_new").text(countryName));
 	} else {
 		$('#country_name').text(countryName);
 	}
-	
+
 	$('#country_confirmed').text(country_confirmed.toLocaleString('ro-RO'));
 	$('#country_deaths').text(country_deaths.toLocaleString('ro-RO'));
 	$('#country_recovered').text(country_recovered.toLocaleString('ro-RO'));
 	$('#country_still_sick').text(country_still_sick.toLocaleString('ro-RO'));
-	
+
 	$('#country_confirmed_new').text(country_new_cases > 0 ? '+' + country_new_cases.toLocaleString('ro-RO') : (country_new_cases == 0 ? '' : country_new_cases.toLocaleString('ro-RO')));
 	$('#country_deaths_new').text(country_new_deaths > 0 ? '+' + country_new_deaths.toLocaleString('ro-RO') : (country_new_deaths == 0 ? '' : country_new_deaths.toLocaleString('ro-RO')));
 	$('#country_recovered_new').text(country_new_recovered > 0 ? '+' + country_new_recovered.toLocaleString('ro-RO') : (country_new_recovered == 0 ? '' : country_new_recovered.toLocaleString('ro-RO')));
 	$('#country_still_sick_new').text(country_new_still_sick > 0 ? '+' + country_new_still_sick.toLocaleString('ro-RO') : (country_new_still_sick == 0 ? '' : country_new_still_sick.toLocaleString('ro-RO')));
-	
+
 }
 
 function fillGlobalInfo() {

@@ -47,9 +47,9 @@ function setOpacity(rgba) {
 	return rgba.substr(0, rgba.lastIndexOf(",") + 1) + " " + opacity + ")";
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
 
-	$(function () {
+	$(function() {
 		$("input").checkboxradio({
 			icon: false
 		});
@@ -63,7 +63,7 @@ $(document).ready(function () {
 		$("#footer").load("footer.html");
 	}
 
-	$.when(getRoEvolutionAjaxCall()).done(function () {
+	$.when(getRoEvolutionAjaxCall()).done(function() {
 		fillRoInfo();
 		renderGraphRoEvolution();
 		buildRoSlider();
@@ -77,15 +77,15 @@ $(document).ready(function () {
 		dropdown.append('<option selected="true" value="null" disabled>Alege jude\u021B</option>'); // default disabled option
 		dropdown.prop('selectedIndex', 0);
 
-		$.getJSON('../../api/json/ro_judete.json', function (return_data) {
-			$.each(return_data.response, function (key, value) {
+		$.getJSON('../../api/json/ro_judete.json', function(return_data) {
+			$.each(return_data.response, function(key, value) {
 				dropdown.append($('<option></option>').attr('value', value.judet).text(value.judet_nume));
 			})
 		});
 
 		$("#judet").selectmenu().addClass("overflow");
 
-		$("#judet").on("selectmenuchange", function () {
+		$("#judet").on("selectmenuchange", function() {
 			// get data & render graph
 			fillGraphJudet($('#judet option:selected').val());
 		});
@@ -137,7 +137,7 @@ function buildRoSlider() {
 		min: 0,
 		max: (roDatesArray.length - 1),
 		values: [0, (roDatesArray.length - 1)],
-		slide: function (event, ui) {
+		slide: function(event, ui) {
 			renderGraphRoEvolution(ui.values[0], ui.values[1]);
 		}
 	});
@@ -153,14 +153,14 @@ function buildJudetSlider() {
 		min: 0,
 		max: (judetDatesArray.length - 1),
 		values: [0, (judetDatesArray.length - 1)],
-		slide: function (event, ui) {
+		slide: function(event, ui) {
 			renderGraphJudetEvolution(ui.values[0], ui.values[1]);
 		}
 	});
 }
 
 function fillGraphJudet(judet) {
-	$.when(getJudetEvolutionAjaxCall(judet)).done(function () {
+	$.when(getJudetEvolutionAjaxCall(judet)).done(function() {
 		fillJudetInfo();
 		renderGraphJudetEvolution();
 		buildJudetSlider();
@@ -232,8 +232,8 @@ function renderGraphRoEvolution(min, max) {
 
 	var ctxCoronaRomania = $("#canvasCoronaRomania");
 
-	var daysCount = ((typeof (max) == 'undefined') ? (roDatesArray.length - 1) : max) - 
-					((typeof (min) == 'undefined') ? 0 : min) + 1;
+	var daysCount = ((typeof (max) == 'undefined') ? (roDatesArray.length - 1) : max) -
+		((typeof (min) == 'undefined') ? 0 : min) + 1;
 
 	var roTitleText = 'Evolu\u021Bia cazurilor COVID-19 \u00EEn Rom\u0203nia \u00EEntre ' +
 		((typeof (min) == 'undefined') ? roDatesArray[0] : roDatesArray[min]) + ' \u0219i ' +
@@ -274,7 +274,7 @@ function renderGraphRoEvolution(min, max) {
 						drawOnChartArea: true
 					}
 				},
-					{
+				{
 					type: 'linear',
 					display: true,
 					position: 'right',
@@ -297,7 +297,7 @@ function getRoEvolutionAjaxCall() {
 	return $.ajax({
 		url: "../../api/json/ro_evolution.json",
 
-		success: function (data) {
+		success: function(data) {
 			//console.log(data);
 
 			roConfirmedArray = [];
@@ -317,7 +317,7 @@ function getRoEvolutionAjaxCall() {
 			}
 
 		},
-		error: function (data) {
+		error: function(data) {
 			console.log(data);
 		}
 	}); // end of ajax
@@ -331,9 +331,9 @@ function renderGraphJudetEvolution(min, max) {
 	if (typeof coronaJudetChart != "undefined") {
 		coronaJudetChart.destroy();
 	}
-	
-	var daysCount = ((typeof (max) == 'undefined') ? (judetDatesArray.length - 1) : max) - 
-					((typeof (min) == 'undefined') ? 0 : min) + 1;
+
+	var daysCount = ((typeof (max) == 'undefined') ? (judetDatesArray.length - 1) : max) -
+		((typeof (min) == 'undefined') ? 0 : min) + 1;
 
 	var judetTitleText = 'Evolu\u021Bia cazurilor COVID-19 \u00EEn jude\u021Bul ' + $("#judet option:selected").text() + " \u00EEntre " +
 		((typeof (min) == 'undefined') ? judetDatesArray[0] : judetDatesArray[min]) + ' \u0219i ' +
@@ -374,7 +374,7 @@ function renderGraphJudetEvolution(min, max) {
 						drawOnChartArea: true
 					}
 				},
-					{
+				{
 					type: 'linear',
 					display: true,
 					position: 'right',
@@ -454,7 +454,7 @@ function getJudetEvolutionAjaxCall(judet) {
 	return $.ajax({
 		url: "../../api/v1/judet?judet=" + judet,
 
-		success: function (data) {
+		success: function(data) {
 			//console.log(data);
 			judetDatesArray = [];
 			judetConfirmedArray = [];
@@ -471,7 +471,7 @@ function getJudetEvolutionAjaxCall(judet) {
 			}
 
 		},
-		error: function (data) {
+		error: function(data) {
 			console.log(data);
 		}
 	}); // end of ajax
@@ -483,11 +483,11 @@ function fillJudetInfo() {
 	$('#judet_confirmed').text(parseInt(judetConfirmedArray[judetConfirmedArray.length - 1]).toLocaleString('ro-RO'));
 	$('#judet_incidence').text(parseFloat(judetIncidenceArray[judetIncidenceArray.length - 1]).toLocaleString('ro-RO'));
 	$('#judet_avg_confirmed').text(parseFloat(judetConfirmedAvgArray[judetConfirmedAvgArray.length - 1]).toLocaleString('ro-RO'));
-	
+
 	var newConfirmed = parseInt(judetConfirmedDiffArray[judetConfirmedDiffArray.length - 1]);
 	var diffIncidence = parseFloat(judetIncidenceArray[judetIncidenceArray.length - 1]) - parseFloat(judetIncidenceArray[judetIncidenceArray.length - 2]);
 	var diffAvg = parseFloat(judetConfirmedAvgArray[judetConfirmedAvgArray.length - 1]) - parseFloat(judetConfirmedAvgArray[judetConfirmedAvgArray.length - 2]);
-	
+
 	$('#judet_confirmed_new').text(newConfirmed > 0 ? '+' + newConfirmed.toLocaleString('ro-RO') : newConfirmed.toLocaleString('ro-RO'));
 	$('#judet_incidence_diff').text(diffIncidence > 0 ? '+' + diffIncidence.toLocaleString('ro-RO') : diffIncidence.toLocaleString('ro-RO'));
 	$('#judet_avg_diff').text(diffAvg > 0 ? '+' + diffAvg.toLocaleString('ro-RO') : diffAvg.toLocaleString('ro-RO'));
