@@ -42,6 +42,14 @@ var screenWidthResizeDiv = 680;
 // backward days for average
 var backDaysAvg = 14;
 
+function formatDate(stringDate) {
+	var myDate = new Date(stringDate);
+
+	return ("0" + myDate.getDate()).slice(-2) +
+		("0" + (myDate.getMonth() + 1)).slice(-2) +
+		myDate.getFullYear();
+}
+
 function setOpacity(rgba) {
 	var opacity = 0.1;
 	return rgba.substr(0, rgba.lastIndexOf(",") + 1) + " " + opacity + ")";
@@ -304,11 +312,11 @@ function getRoEvolutionAjaxCall() {
 			//roAvgConfirmedArray = [];
 			//roDiffConfirmedArray = [];
 
-			roFirstDay = data.response[0].formatted_date;
-			roLastDay = new Date(data.response[data.response.length - 1].raw_date);
+			roFirstDay = formatDate(data.response[0].date);
+			roLastDay = new Date(data.response[data.response.length - 1].date);
 
 			for (var i in data.response) {
-				roDatesArray.push(data.response[i].formatted_date);
+				roDatesArray.push(formatDate(data.response[i].date));
 				roConfirmedArray.push(data.response[i].confirmed);
 				// avg
 				roAvgConfirmedArray.push(data.response[i].avg_confirmed);
