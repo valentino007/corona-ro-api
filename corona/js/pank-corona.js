@@ -70,8 +70,8 @@ var backDaysAvg = 14;
 function formatDate(stringDate) {
 	var myDate = new Date(stringDate);
 
-	return ("0" + myDate.getDate()).slice(-2) +
-		("0" + (myDate.getMonth() + 1)).slice(-2) +
+	return ("0" + myDate.getDate()).slice(-2) + "/" +
+		("0" + (myDate.getMonth() + 1)).slice(-2) + "/" +
 		myDate.getFullYear();
 }
 
@@ -823,7 +823,7 @@ function getGlobalEvolutionAjaxCall() {
 		url: "../api/json/global_evolution.json",
 
 		success: function(data) {
-			//console.log(data);
+			console.log(data);
 
 			globalConfirmedArray = [];
 			globalRecoveredArray = [];
