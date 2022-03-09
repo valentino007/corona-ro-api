@@ -7,6 +7,7 @@ var deathsColor = 'rgba(0, 0, 0, 1)';
 var recoveredColor = 'rgba(0, 255, 1, 1)';
 var stillSickColor = 'rgba(255, 165, 0, 1)';
 var confirmedAvgColor = 'rgba(25, 25, 215, 0.6)';
+var incidenceColor = 'rgba(255, 129, 0, 0.7)';
 
 var confirmedBackGroundColor = setOpacity(confirmedColor);
 var deathsBackGroundColor = setOpacity(deathsColor);
@@ -31,6 +32,12 @@ var judetConfirmedDiffArray = [];
 var judetConfirmedAvgArray = [];
 var judetIncidenceArray = [];
 
+// localitate evolution arrays
+var localitateDatesArray = [];
+var localitateCasesArray = [];
+var localitateIncidenceArray = [];
+var localitateAvgArray = [];
+
 // judete
 var judet_confirmed = 0;
 var judet_incidence = 0;
@@ -41,6 +48,46 @@ var screenWidthResizeDiv = 680;
 
 // backward days for average
 var backDaysAvg = 14;
+
+function properCase(str) {
+	// this is for the very first character
+	var properCase = str.substring(0, 1).toUpperCase() + str.substring(1, str.length).toLowerCase();
+
+	// if there are spaces 
+	var spaceStartPos = 0;
+	while (properCase.indexOf(" ", spaceStartPos) != -1) {
+		var indexOfSpace = properCase.indexOf(" ", spaceStartPos);
+
+		properCase = properCase.substring(0, indexOfSpace + 1) +
+			properCase.substring(indexOfSpace + 1, indexOfSpace + 2).toUpperCase() +
+			properCase.substring(indexOfSpace + 2, properCase.length);
+		spaceStartPos = indexOfSpace + 1;
+	}
+
+	// if there are dashes (there is usually only one)
+	var dashStartPos = 0;
+	while (properCase.indexOf("-", dashStartPos) != -1) {
+		var indexOfDash = properCase.indexOf("-", dashStartPos);
+
+		properCase = properCase.substring(0, indexOfDash + 1) +
+			properCase.substring(indexOfDash + 1, indexOfDash + 2).toUpperCase() +
+			properCase.substring(indexOfDash + 2, properCase.length);
+		dashStartPos = indexOfDash + 1;
+	}
+
+	// if there are dots 
+	var dotStartPos = 0;
+	while (properCase.indexOf(".", dotStartPos) != -1) {
+		var indexOfDot = properCase.indexOf(".", dotStartPos);
+
+		properCase = properCase.substring(0, indexOfDot + 1) +
+			properCase.substring(indexOfDot + 1, indexOfDot + 2).toUpperCase() +
+			properCase.substring(indexOfDot + 2, properCase.length);
+		dotStartPos = indexOfDot + 1;
+	}
+
+	return properCase;
+}
 
 function formatDate(stringDate) {
 	var myDate = new Date(stringDate);
@@ -94,10 +141,22 @@ $(document).ready(function() {
 		$("#judet").selectmenu().addClass("overflow");
 
 		$("#judet").on("selectmenuchange", function() {
+			// fill select localitati
+			fillDropDownLocalitati($('#judet option:selected').val());
 			// get data & render graph
 			fillGraphJudet($('#judet option:selected').val());
 		});
 
+		$("#localitate").change(function() {
+			if ($('#localitate option:selected').val() == "0") {
+				// render again judet graph - but not reload data
+				//fillGraphJudet($('#judet option:selected').val());
+				renderGraphJudetEvolution();
+				buildJudetSlider();
+			} else {
+				fillGraphLocalitate($('#judet option:selected').val(), $('#localitate option:selected').val());
+			}
+		});
 	}
 
 	if (window.screen.width <= screenWidthResizeDiv) {
@@ -167,11 +226,66 @@ function buildJudetSlider() {
 	});
 }
 
+function buildLocalitateSlider() {
+	if (typeof $("#judet-slider-range").slider("instance") != "undefined") {
+		$("#judet-slider-range").slider("destroy");
+	}
+
+	$("#judet-slider-range").slider({
+		range: true,
+		min: 0,
+		max: (localitateDatesArray.length - 1),
+		values: [0, (localitateDatesArray.length - 1)],
+		slide: function(event, ui) {
+			renderGraphLocalitateEvolution(ui.values[0], ui.values[1]);
+		}
+	});
+}
+
+function fillDropDownLocalitati(judet) {
+
+	dropdown = $('#localitate');
+
+	$.ajax({
+		url: "../../api/v1/corona/localitati?judet=" + judet,
+
+		success: function(data) {
+
+			//console.log(data);
+
+			//dropdown.selectmenu().removeClass("overflow");
+
+			dropdown.empty();
+			dropdown.append('<option value="0" selected="true">----</option>');
+			dropdown.append('<option value="null" disabled>Alege localitatea</option>'); // disabled option
+			dropdown.prop('selectedIndex', 0);
+
+			$.each(data.localitati, function(key, value) {
+				dropdown.append($('<option></option>').attr('value', value).text(properCase(value)));
+			});
+
+			//dropdown.selectmenu().addClass("overflow");
+
+		},
+		error: function(data) {
+			console.log(data);
+		}
+	}); // end of ajax
+}
+
 function fillGraphJudet(judet) {
 	$.when(getJudetEvolutionAjaxCall(judet)).done(function() {
 		fillJudetInfo();
 		renderGraphJudetEvolution();
 		buildJudetSlider();
+	});
+}
+
+function fillGraphLocalitate(judet, localitate) {
+	$.when(getLocalitateEvolutionAjaxCall(judet, localitate)).done(function() {
+		//fillJudetInfo();
+		renderGraphLocalitateEvolution();
+		buildLocalitateSlider();
 	});
 }
 
@@ -457,6 +571,132 @@ function getChartDataJudetEvolution(min, max) {
 	return chartDataJudetCoronaCases;
 }
 
+function renderGraphLocalitateEvolution(min, max) {
+
+	var ctxCoronaJudet = $("#canvasCoronaJudet");
+
+	if (typeof coronaJudetChart != "undefined") {
+		coronaJudetChart.destroy();
+	}
+
+	var daysCount = ((typeof (max) == 'undefined') ? (localitateDatesArray.length - 1) : max) -
+		((typeof (min) == 'undefined') ? 0 : min) + 1;
+
+	var localitateTitleText = 'Evolu\u021Bia cazurilor COVID-19 \u00EEn ' + $("#localitate option:selected").text() +
+		' (jude\u021Bul ' + $("#judet option:selected").text() + ") \u00EEntre " +
+		((typeof (min) == 'undefined') ? localitateDatesArray[0] : localitateDatesArray[min]) + ' \u0219i ' +
+		((typeof (max) == 'undefined') ? localitateDatesArray[localitateDatesArray.length - 1] : localitateDatesArray[max]) + " (" + daysCount + " zile)";
+
+	coronaJudetChart = new Chart(ctxCoronaJudet, {
+		type: 'line',
+		data: getChartDataLocalitateEvolution(min, max),
+		options: {
+			legend: {
+				position: 'bottom',
+				labels: {
+					defaultFontFamily: 'Open Sans'
+				}
+			},
+			title: {
+				display: true,
+				fontSize: 16,
+				fontStyle: '',
+				fontFamily: "'Open Sans', sans-serif",
+				text: localitateTitleText
+			},
+			scales: {
+				xAxes: [{
+					gridLines: {
+						drawOnChartArea: false
+					}
+				}],
+				yAxes: [{
+					type: 'linear',
+					display: true,
+					position: 'left',
+					id: 'y-axis-1',
+					ticks: {
+						fontColor: 'red'
+					},
+					gridLines: {
+						drawOnChartArea: true
+					}
+				},
+				{
+					type: 'linear',
+					display: true,
+					position: 'right',
+					id: 'y-axis-2',
+					ticks: {
+						fontColor: 'blue'
+					},
+					gridLines: {
+						drawOnChartArea: true
+					}
+				}]
+			}
+		},
+	});
+
+}
+
+function getChartDataLocalitateEvolution(min, max) {
+
+	var datesArray = [];
+	var cazuriArray = [];
+	var incidentaArray = [];
+	var avgArray = [];
+
+	if (typeof (min) !== 'undefined' && typeof (max) !== 'undefined') {
+		for (var i = min; i <= max; i++) {
+			datesArray.push(localitateDatesArray[i]);
+			cazuriArray.push(localitateCasesArray[i]);
+			incidentaArray.push(localitateIncidenceArray[i]);
+			avgArray.push(localitateAvgArray[i]);
+		}
+	} else {
+		datesArray = localitateDatesArray;
+		cazuriArray = localitateCasesArray;
+		incidentaArray = localitateIncidenceArray;
+		avgArray = localitateAvgArray;
+	}
+
+	var chartDataLocalitateCoronaCases = {
+		labels: datesArray,
+		datasets: [
+			{
+				label: 'Inciden\u021Ba',
+				type: 'line',
+				backgroundColor: confirmedBackGroundColor,
+				borderColor: incidenceColor,
+				fill: false,
+				yAxisID: 'y-axis-1',
+				data: incidentaArray
+			},
+			{
+				label: 'Media la ' + backDaysAvg + ' zile',
+				type: 'line',
+				backgroundColor: confirmedAvgBackGroudColor,
+				borderColor: confirmedAvgColor,
+				yAxisID: 'y-axis-2',
+				fill: false,
+				data: avgArray
+			},
+			{
+				label: 'Cazuri zilnice',
+				type: 'bar',
+				backgroundColor: confirmedBackGroundColor,
+				borderColor: confirmedColor,
+				fill: false,
+				yAxisID: 'y-axis-2',
+				data: cazuriArray
+			},
+		]
+	};
+
+	return chartDataLocalitateCoronaCases;
+}
+
 function getJudetEvolutionAjaxCall(judet) {
 
 	return $.ajax({
@@ -464,6 +704,13 @@ function getJudetEvolutionAjaxCall(judet) {
 
 		success: function(data) {
 			//console.log(data);
+
+			// clears also localitate arrays
+			localitateDatesArray = [];
+			localitateCasesArray = [];
+			localitateIncidenceArray = [];
+			localitateAvgArray = [];
+
 			judetDatesArray = [];
 			judetConfirmedArray = [];
 			judetConfirmedDiffArray = [];
@@ -471,7 +718,7 @@ function getJudetEvolutionAjaxCall(judet) {
 			judetIncidenceArray = [];
 
 			for (var i in data.response) {
-				judetDatesArray.push(data.response[i].formatted_date);
+				judetDatesArray.push(formatDate(data.response[i].date));
 				judetConfirmedArray.push(data.response[i].confirmed);
 				judetConfirmedDiffArray.push(data.response[i].diff_confirmed);
 				judetConfirmedAvgArray.push(data.response[i].avg_confirmed);
@@ -483,6 +730,35 @@ function getJudetEvolutionAjaxCall(judet) {
 			console.log(data);
 		}
 	}); // end of ajax
+}
+
+function getLocalitateEvolutionAjaxCall(judet, localitate) {
+	return $.ajax({
+		// normalize localitate
+		url: "../../api/v1/corona/evolutielocalitati?judet=" + judet + "&localitate=" + localitate.normalize("NFD").replace(/\p{Diacritic}/gu, ""),
+
+		success: function(data) {
+			//console.log(data);
+
+			localitateDatesArray = [];
+			localitateCasesArray = [];
+			localitateIncidenceArray = [];
+			localitateAvgArray = [];
+
+			for (var i in data.response) {
+
+				localitateDatesArray.push(formatDate(data.response[i].date));
+				localitateCasesArray.push(data.response[i].cazuri);
+				localitateIncidenceArray.push(data.response[i].incidenta);
+				localitateAvgArray.push(data.response[i].avg);
+			}
+
+		},
+		error: function(data) {
+			console.log(data);
+		}
+	}); // end of ajax
+
 }
 
 function fillJudetInfo() {

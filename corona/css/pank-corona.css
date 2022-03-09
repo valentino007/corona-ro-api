@@ -161,3 +161,9 @@ ul.ui-menu {
 	font-family: 'Open Sans', sans-serif;
 	font-size: medium;
 }
+
+.img {
+	padding-top: 0px;
+	padding-bottom: 0px;
+	text-align: center;
+}
