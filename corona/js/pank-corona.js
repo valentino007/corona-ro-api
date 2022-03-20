@@ -1111,7 +1111,7 @@ function getCountryDailyDiffAjaxCall(country) {
 			countryAvgConfirmedArray = [];
 
 			for (var i in data.response) {
-				countryDatesArray.push(data.response[i].formatted_date);
+				countryDatesArray.push(formatDate(data.response[i].date));
 				countryDiffConfirmedArray.push(data.response[i].diff_confirmed);
 				countryDiffRecoveredArray.push(data.response[i].diff_recovered);
 				countryDiffDeathsArray.push(data.response[i].diff_deaths);

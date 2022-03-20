@@ -700,7 +700,7 @@ function getChartDataLocalitateEvolution(min, max) {
 function getJudetEvolutionAjaxCall(judet) {
 
 	return $.ajax({
-		url: "../../api/v1/judet?judet=" + judet,
+		url: "../../api/v1/judet?judet=" + judet + "&avg=" + backDaysAvg,
 
 		success: function(data) {
 			//console.log(data);
